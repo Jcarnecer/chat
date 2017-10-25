@@ -1,4 +1,4 @@
-const baseUrl = "http://chat.payakapps.com/";
+const baseUrl = "http://chat.payakapps.com";
 
 function getConversations() {
     return $.ajax({
