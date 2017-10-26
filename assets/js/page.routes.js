@@ -164,7 +164,7 @@ function message(context) {
 
 		if ($_messageBody.val().trim()) {
 			let $_message = $(`
-				<div class="message message--primary">	
+				<div class="message message--primary">
 					<div class="message__body">
 						<div class="message__time"></div>
 						<div class="message__bubble">${$_messageBody.val().trim()}</div>
@@ -180,7 +180,7 @@ function message(context) {
 			createConversationMessage(conversationId, $_createMessageForm.serialize()).then(function(response) {
 				let message = $.parseJSON(response);
 
-				$_message.attr("data-id", message.id);
+				$_message.attr("data-message", message.id);
 				$_message.eventShowTime({timestamp: message.created_at});
 				$_message.eventShowStatus({status: "Delivered"});
 				socket.emit('chat message', message);
