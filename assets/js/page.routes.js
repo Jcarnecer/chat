@@ -11,6 +11,7 @@ const $_createConversationModal = $('#createConversationModal');
 const $_createConversationForm = $('#createConversationForm');
 
 const socket = io('https://socket-simpleapp.herokuapp.com/');
+const audio = new Audio('https://notificationsounds.com/soundfiles/68ce199ec2c5517597ce0a4d89620f55/file-sounds-954-all-eyes-on-me.mp3');
 
 page('/', index);
 page("/messages/create", showCreateConversation);
@@ -293,12 +294,14 @@ function loadMessageArea(conversationId) {
 
 				$_message.eventShowTime({timestamp: message.created_at});
 				$_messageArea.append($_message).scrollToBottom();
+				audio.play();
 			}
 
 			if ($(`[data-conversation="${message.conversation_id}"]`).length) {
 				$(`[data-conversation="${message.conversation_id}"]`).find("small").html(message.body);
 				//$(`[data-conversation="${message.conversation_id}"]`).find(".sidebar__item").addClass("new");
 				$('.conversation-list').prepend($(`[data-conversation="${message.conversation_id}"]`).remove());
+				audio.play();
 			}
 		});
 	});
