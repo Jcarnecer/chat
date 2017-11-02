@@ -29,7 +29,7 @@ function index(context) {
 
 			$('#sidebar').find('.shimmer').hide();
 			$('.sidebar__header').append(`
-				<a class="sidebar__header__item" href="http://localhost/main">
+				<a class="sidebar__header__item" href="http://payakapps.com">
 					<i class="fa fa-arrow-left"></i>
 				</a>
 				<a class="sidebar__header__item">kaChat</a>
@@ -63,7 +63,7 @@ function index(context) {
 					$('#createConversationModal .menu').append(
 						$(`
 							<div class="menu__item">
-								<img class="menu__image" src="http://localhost/main/assets/img/avatar/${user.id}.png" />
+								<img class="menu__image" src="http://payakapps.com/assets/img/avatar/${user.id}.png" />
 								${user.first_name} ${user.last_name}
 							</div>
 						`)
