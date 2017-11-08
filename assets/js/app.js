@@ -7,7 +7,7 @@
 	var socket;
 	var audio;
 
-	var baseUrl = "http://localhost/chat";
+	var baseUrl = "http://chat.payakapps.com";
 	var apiUrl = "/api/dev";
 
 
