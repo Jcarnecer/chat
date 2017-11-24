@@ -36,7 +36,7 @@
 
 			$("#sidebar").find(".shimmer").hide();
 			$(".sidebar__header").append(`
-				<a class="sidebar__header__item" href="http://localhost/main">
+				<a class="sidebar__header__item" href="http://payakapps.com/">
 					<i class="fa fa-arrow-left"></i>
 				</a>
 				<a class="sidebar__header__item">kaChat</a>
