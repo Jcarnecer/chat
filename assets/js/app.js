@@ -323,7 +323,6 @@
 	}
 
 	function initPageJs() {
-		page.base("/chat");
 		page("/", index);
 		page("/conversations/:conversationId", showConversation);
 		page.exit("/conversations/:conversationId", exitConversation);
