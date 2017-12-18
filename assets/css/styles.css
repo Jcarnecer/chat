@@ -51,9 +51,11 @@ body {
  */
 .message__bubble {
 	border-radius: 16px;
+	max-width: 50%;
 	min-height: 24px;
 	padding: 8px 16px;
 	position: relative;
+	word-break: break-all;
 }
 
 .message--primary .message__bubble {

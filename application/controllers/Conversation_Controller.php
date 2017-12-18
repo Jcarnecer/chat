@@ -47,7 +47,7 @@ class Conversation_Controller extends CI_Controller {
 		if ($conversation["messages"]) {
 			foreach ($conversation["messages"] as $id => $message) {
 				$conversation["messages"][$id]["body"] = $this->encryption->decrypt($message["body"]);
-				$conversation["messages"][$id]["created_by"] = $this->db->select("users.id, users.first_name, users.last_name")
+				$conversation["messages"][$id]["created_by"] = $this->db->select("users.id, users.first_name, users.last_name, users.avatar_url")
 					->from("users")
 					->where("id", $message["created_by"])
 					->get()
