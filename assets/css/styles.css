@@ -51,9 +51,11 @@ body {
  */
 .message__bubble {
 	border-radius: 16px;
+	max-width: 50%;
 	min-height: 24px;
 	padding: 8px 16px;
 	position: relative;
+	word-break: break-all;
 }
 
 .message--primary .message__bubble {
@@ -231,6 +233,12 @@ body {
 #sidebar .sidebar__header__item:hover {
 	background-color: inherit;
 	border-left: none;
+}
+
+.sidebar__item__header,
+.sidebar__item__subtitle {
+	overflow: hidden;
+	text-overflow: ellipsis;
 }
 
 ul {

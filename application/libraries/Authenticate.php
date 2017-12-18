@@ -32,5 +32,4 @@ class Authenticate {
 	public function logout_user() {
 		$this->CI->session->unset_userdata('user');
 	}
-
 }

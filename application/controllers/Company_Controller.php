@@ -15,7 +15,7 @@ class Company_Controller extends CI_Controller {
 		$user = $this->session->userdata("user");
 		$company = $this->db->get_where("companies", ["id" => $user->company_id])->row_array();
 
-		$users = $this->db->select("users.id, users.first_name, users.last_name, users.email_address")
+		$users = $this->db->select("users.id, users.first_name, users.last_name, users.email_address, users.avatar_url")
 			->from("users")
 			->where("company_id", $company["id"])
 			->order_by('first_name')

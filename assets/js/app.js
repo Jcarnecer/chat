@@ -16,10 +16,17 @@
 		if (conversation.name) {
 			conversationName = conversation.name;
 		} else {
-			$.each(conversation.participants, function(index, participant) {
+			let participants = conversation.participants;
+			participants.forEach(function(participant, index) {
+				if (participant.id === userId) {
+					participants.splice(index, 1);
+				}
+			});
+
+			$.each(participants, function(index, participant) {
 				if (participant.id !== userId) {
-					conversationName += participant.first_name + ' ' + participant.last_name;
-					conversationName += (conversation.participants.length > 2 && index < conversation.participants.length - 1) ? ", " : "";
+					conversationName += participant["first_name"] + " " + participant["last_name"];
+    				conversationName += (index === participants.length - 1) ? "" : ", ";
 				}
 			});
 		}
@@ -36,7 +43,7 @@
 
 			$("#sidebar").find(".shimmer").hide();
 			$(".sidebar__header").append(`
-				<a class="sidebar__header__item" href="http://payakapps.com/">
+				<a class="sidebar__header__item" href="http://localhost/main">
 					<i class="fa fa-arrow-left"></i>
 				</a>
 				<a class="sidebar__header__item">kaChat</a>
@@ -50,8 +57,8 @@
 				$("#conversationList").append(`
 					<li title="${conversationName}" data-conversation="${conversation.id}">
 						<a href="${baseUrl}/conversations/${conversation.id}" class="sidebar__item ${conversation.name === 'General' ? 'active': ''}">
-							<div class="">${conversationName}</div>
-							<small>${conversation.latest_message.body}</small>
+							<div class="sidebar__item__header">${conversationName}</div>
+							<small class="sidebar__item__subtitle">${conversation.latest_message.body}</small>
 						</a>
 					</li>
 				`);
@@ -59,6 +66,7 @@
 			$(".sidebar__item").toggleActive();
 		})
 	}
+
 
 	function createConversation(conversationDetails) {
 		return $.ajax({
@@ -104,7 +112,7 @@
 				if (user.id !== userId) {
 					var $item = $(`
 						<div class="menu__item">
-							<img class="menu__image" src="http://localhost/main/assets/img/avatar/${user.id}.png" />
+							<img class="menu__image" src="${user.avatar_url}" />
 							${user.first_name} ${user.last_name}
 						</div>
 					`);
@@ -131,7 +139,6 @@
 			var conversation = $.parseJSON(data);
 			
 			conversation.name = getConversationName(conversation);
-			$("title").text(conversation.name);
 			$(".navbar-brand").html(conversation.name);
 
 			$("#messageArea").html("");
@@ -162,7 +169,7 @@
 						<div class="message message--default" data-user="${message.created_by.id}" data-message="${message.id}">
 							<div class="message__user">${message.created_by.first_name} ${message.created_by.last_name}</div>
 							<div class="message__body">
-								<img class="message__avatar" src="http://payakapps.com/upload/avatar/${message.created_by.id}.png" />
+								<img class="message__avatar" src="${message.created_by.avatar_url}" />
 								<div class="message__bubble">${message.body}</div>
 								<div class="message__time"></div>
 							</div>
@@ -259,7 +266,7 @@
 						<div class="message message--default" data-user="${message.created_by.id}" data-message="${message.id}">
 							<div class="message__user">${message.created_by.first_name} ${message.created_by.last_name}</div>
 							<div class="message__body">
-								<img class="message__avatar" src="http://payakapps.com/upload/avatar/${message.created_by.id}.png" />
+								<img class="message__avatar" src="${message.created_by.avatar_url}" />
 								<div class="message__bubble">${message.body}</div>
 								<div class="message__time"></div>
 							</div>
@@ -285,7 +292,6 @@
 	}
 
 	function exitConversation(context, next) {
-		$("title").text("");
 		$(".navbar-brand").html("<div class='shimmer shimmer--light w-100 m-2'></div>");
 		$("#messageArea").html(`
 			<div class="shimmer shimmer--light w-50 m-2 mt-3"></div>
@@ -317,6 +323,7 @@
 	}
 
 	function initPageJs() {
+		page.base("/chat");
 		page("/", index);
 		page("/conversations/:conversationId", showConversation);
 		page.exit("/conversations/:conversationId", exitConversation);
