@@ -7,9 +7,9 @@
 	var socket;
 	var audio;
 
-	var baseUrl = "http://chat.payakapps.com";
-	var apiUrl = "/api/dev";
-
+	var apiUrl;
+	var baseUrl;
+	var mainUrl;
 
 	function getConversationName(conversation) {
 	    var conversationName = "";
@@ -214,98 +214,6 @@
 		}.bind($message, conversationId, messageDetails));
 	}
 
-	/* page.js routes */
-	function index(context) {
-		page.redirect("/conversations/" + $('meta[name="general_conversation"]').attr('content'));
-	}
-
-	function showConversation(context) {
-		let conversationId = context.params.conversationId;
-
-		getConversation(conversationId);
-
-		$("#createMessageForm").unbind("submit").submit(function(event) {
-			event.preventDefault();
-
-			if ($("#messageBody").val().trim()) {
-				let $message = $(`
-					<div class="message message--primary">
-						<div class="message__body">
-							<div class="message__time"></div>
-							<div class="message__bubble">${$("#messageBody").val().trim()}</div>
-						</div>
-						<div class="message__status">Sending...</div>
-					</div>
-				`);
-
-				$message.find('.message__time').hide();
-				$("#messageArea").append($message);
-				$("#messageArea").scrollToBottom();
-
-				createConversationMessage(conversationId, $("#createMessageForm").serialize(), $message);
-				$("#messageBody").val("");
-			}
-		});
-
-		socket.off("chat message");
-		socket.on("chat message", function(message) {
-			var $message;
-			var $lastMessage = $(".message").last();
-
-			if (message.created_by.id !== userId && message.conversation_id === conversationId) {
-				if ($lastMessage.attr('data-user') === message.created_by.id) {
-					$message = $(`
-						<div class="message message--default" data-user="${message.created_by.id}" data-message="${message.id}">
-							<div class="message__body">
-								<div class="message__bubble">${message.body}</div>
-								<div class="message__time"></div>
-							</div>
-						</div>`);
-				} else {
-					$message = $(`
-						<div class="message message--default" data-user="${message.created_by.id}" data-message="${message.id}">
-							<div class="message__user">${message.created_by.first_name} ${message.created_by.last_name}</div>
-							<div class="message__body">
-								<img class="message__avatar" src="${message.created_by.avatar_url}" />
-								<div class="message__bubble">${message.body}</div>
-								<div class="message__time"></div>
-							</div>
-						</div>`);
-				}
-
-				$message.eventShowTime({timestamp: message.created_at});
-				$("#messageArea").append($message).scrollToBottom();
-				audio.play();
-			}
-
-			if ($(`[data-conversation="${message.conversation_id}"]`).length) {
-				$(`[data-conversation="${message.conversation_id}"]`).find("small").html(message.body);
-				$('#conversationList').prepend($(`[data-conversation="${message.conversation_id}"]`).remove());
-				$(".sidebar__item").toggleActive();
-
-				if (message.created_by.id !== userId) {
-					$(`[data-conversation="${message.conversation_id}"]`).find(".sidebar__item").addClass("new");
-					audio.play();	
-				}
-			}
-		});
-	}
-
-	function exitConversation(context, next) {
-		$(".navbar-brand").html("<div class='shimmer shimmer--light w-100 m-2'></div>");
-		$("#messageArea").html(`
-			<div class="shimmer shimmer--light w-50 m-2 mt-3"></div>
-	        <div class="shimmer shimmer--light w-25 m-2"></div>
-	        <div class="shimmer shimmer--light w-50 m-2 mt-4"></div>
-	        <div class="shimmer shimmer--light w-25 m-2"></div>
-	    `);
-		next();
-	}
-
-	function notFound() {
-		page.redirect("/");
-	}
-
 	function attachEvents() {
 		$("#createConversationModal").on("shown.bs.modal", function() {
 			getCompanyUsers();
@@ -323,10 +231,101 @@
 	}
 
 	function initPageJs() {
-		page("/", index);
-		page("/conversations/:conversationId", showConversation);
-		page.exit("/conversations/:conversationId", exitConversation);
-		page("*", notFound);
+		if (window.location.origin !== "http://chat.payakapps.com") {
+			page.base("/chat");
+		}
+
+		page("/", function(context) {
+			page.redirect("/conversations/" + $('meta[name="general_conversation"]').attr('content'));
+		});
+
+		page("/conversations/:conversationId", function(context) {
+			let conversationId = context.params.conversationId;
+
+			getConversation(conversationId);
+
+			$("#createMessageForm").unbind("submit").submit(function(event) {
+				event.preventDefault();
+
+				if ($("#messageBody").val().trim()) {
+					let $message = $(`
+						<div class="message message--primary">
+							<div class="message__body">
+								<div class="message__time"></div>
+								<div class="message__bubble">${$("#messageBody").val().trim()}</div>
+							</div>
+							<div class="message__status">Sending...</div>
+						</div>
+					`);
+
+					$message.find('.message__time').hide();
+					$("#messageArea").append($message);
+					$("#messageArea").scrollToBottom();
+
+					createConversationMessage(conversationId, $("#createMessageForm").serialize(), $message);
+					$("#messageBody").val("");
+				}
+			});
+
+			socket.off("chat message");
+			socket.on("chat message", function(message) {
+				var $message;
+				var $lastMessage = $(".message").last();
+
+				if (message.created_by.id !== userId && message.conversation_id === conversationId) {
+					if ($lastMessage.attr('data-user') === message.created_by.id) {
+						$message = $(`
+							<div class="message message--default" data-user="${message.created_by.id}" data-message="${message.id}">
+								<div class="message__body">
+									<div class="message__bubble">${message.body}</div>
+									<div class="message__time"></div>
+								</div>
+							</div>`);
+					} else {
+						$message = $(`
+							<div class="message message--default" data-user="${message.created_by.id}" data-message="${message.id}">
+								<div class="message__user">${message.created_by.first_name} ${message.created_by.last_name}</div>
+								<div class="message__body">
+									<img class="message__avatar" src="${message.created_by.avatar_url}" />
+									<div class="message__bubble">${message.body}</div>
+									<div class="message__time"></div>
+								</div>
+							</div>`);
+					}
+
+					$message.eventShowTime({timestamp: message.created_at});
+					$("#messageArea").append($message).scrollToBottom();
+					audio.play();
+				}
+
+				if ($(`[data-conversation="${message.conversation_id}"]`).length) {
+					$(`[data-conversation="${message.conversation_id}"]`).find("small").html(message.body);
+					$('#conversationList').prepend($(`[data-conversation="${message.conversation_id}"]`).remove());
+					$(".sidebar__item").toggleActive();
+
+					if (message.created_by.id !== userId) {
+						$(`[data-conversation="${message.conversation_id}"]`).find(".sidebar__item").addClass("new");
+						audio.play();	
+					}
+				}
+			});
+		});
+
+		page.exit("/conversations/:conversationId", function(context, next) {
+			$(".navbar-brand").html("<div class='shimmer shimmer--light w-100 m-2'></div>");
+			$("#messageArea").html(`
+				<div class="shimmer shimmer--light w-50 m-2 mt-3"></div>
+		        <div class="shimmer shimmer--light w-25 m-2"></div>
+		        <div class="shimmer shimmer--light w-50 m-2 mt-4"></div>
+		        <div class="shimmer shimmer--light w-25 m-2"></div>
+		    `);
+			next();
+		});
+
+		page("*", function() {
+			page.redirect("/");
+		});
+		
 		page({hashbang: false});
 		page.start();
 	}
@@ -336,6 +335,16 @@
 		companyId = $('meta[name="company_id"]').attr("content");
 		socket = io('https://socket-simpleapp.herokuapp.com/');
 		audio = new Audio('https://notificationsounds.com/soundfiles/68ce199ec2c5517597ce0a4d89620f55/file-sounds-954-all-eyes-on-me.mp3');
+		apiUrl = "/api/dev";
+
+		if (window.location.origin === "http://chat.payakapps.com") {
+			mainUrl = "http://payakapps.com";
+			baseUrl = "http://chat.payakapps.com";
+		} else {
+			mainUrl = "http://localhost/main";
+			baseUrl = "http://localhost/chat";
+		}
+
 
 		attachEvents();
 		initPageJs();

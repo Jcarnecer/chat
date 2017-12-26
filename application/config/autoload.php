@@ -59,10 +59,10 @@ $autoload['packages'] = array();
 |	$autoload['libraries'] = array('user_agent' => 'ua');
 */
 $autoload['libraries'] = [
-	'utilities', 
-	'authenticate', 
+	'authenticate',
+	'encryption',
 	'session',
-	'encryption'
+	'utilities' 
 ];
 
 /*

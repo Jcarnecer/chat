@@ -1,5 +1,3 @@
-const baseUrl = "http://chat.payakapps.com";
-
 function getConversations() {
     return $.ajax({
         url: baseUrl + '/api/dev/conversations',

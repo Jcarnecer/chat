@@ -7,6 +7,7 @@
         <meta name="user_id" content="<?= $current_user->id ?>" />
         <meta name="company_id" content="<?= $company_id ?>" />
         <meta name="general_conversation" content="<?= $general_conversation ?>" />
+        <meta name="base_url" content="<?= base_url(); ?>" />
         <title>Chat</title>
         <base href="<?= base_url() ?>" />
         <link rel="stylesheet" type="text/css" href="http://payakapps.com/assets/css/flavored-reset-and-normalize.css" />
