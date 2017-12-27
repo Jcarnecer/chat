@@ -35,7 +35,6 @@ class Utilities {
 			$messages->created_by = $this->CI->db->get_where('users', ['id' => $messages->created_by])->row_array();
 		}
 		
-
 		return $messages;
 	}
 
@@ -44,7 +43,6 @@ class Utilities {
 
 		if ($length > 1) {
 			$pivot = $conversations[0];
-
 			$left = $right = [];
 
 			for ($i = 1; $i < $length; $i++) {

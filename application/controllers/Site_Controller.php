@@ -10,14 +10,13 @@ class Site_Controller extends CI_Controller {
 
 	public function index() {
 		if (!$this->session->has_userdata("user")) {
-			return redirect("http://payakapps.com/users/login");
+			redirect(LOGIN_URL);
 		}
 
 		$user = $this->authenticate->current_user();
 
 		$general_conversation = $this->db->get_where(
-			'chat_conversations', 
-			[
+			'chat_conversations', [
 				'name' => 'General', 
 				'company_id' => $user->company_id
 			]
@@ -30,11 +29,9 @@ class Site_Controller extends CI_Controller {
 				"company_id" => $user->company_id,
 				"type" => 1
 			];
-
 			$this->db->insert("chat_conversations", $general_conversation);
 		}
 
-		# check if user is participant of general
 		$is_participant = $this->db->get_where(
 			"chat_participants", [
 				"conversation_id" => $general_conversation["id"],

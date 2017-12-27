@@ -11,6 +11,7 @@
 	var baseUrl;
 	var mainUrl;
 
+
 	function getConversationName(conversation) {
 	    var conversationName = "";
 		if (conversation.name) {
@@ -33,7 +34,6 @@
 		return conversationName;
 	}
 
-
 	function getUserConversations() {
 		return $.ajax({
 			url: baseUrl + apiUrl + "/users/conversations",
@@ -43,7 +43,7 @@
 
 			$("#sidebar").find(".shimmer").hide();
 			$(".sidebar__header").append(`
-				<a class="sidebar__header__item" href="http://localhost/main">
+				<a class="sidebar__header__item" href="${mainUrl}">
 					<i class="fa fa-arrow-left"></i>
 				</a>
 				<a class="sidebar__header__item">kaChat</a>
@@ -153,8 +153,7 @@
 								<div class="message__time"></div>
 								<div class="message__bubble">${message.body}</div>
 							</div>
-						</div>
-					`);
+						</div>`);
 				} else {
 					if ($lastMessage.attr('data-user') === message.created_by.id) {
 						$message = $(`

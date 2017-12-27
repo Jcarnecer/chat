@@ -47,7 +47,6 @@ class User_Controller extends CI_Controller {
 		}
 
 		$conversations = $this->utilities->sort_conversations($conversations);
-
 		return print json_encode($conversations, JSON_PRETTY_PRINT);
 	}
 
